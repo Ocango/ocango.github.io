@@ -16,9 +16,9 @@ api = Api(app)
 @app.errorhandler(404)
 def page_not_found(e):
     # 页面未找到
-    return render_template('404.html'), 404
+    return render_template('errorpage/404.html'), 404
 
-# 
+# 连接地址
 @app.route('/')
 def index():
     return render_template('index.html')

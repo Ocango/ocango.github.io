@@ -1,0 +1,20 @@
+{% extends "base/base.html" %}
+<!-- MainBody -->
+{% block mainbody %}
+
+	<!-- Content -->
+		<section>
+			<header class="main">
+				<h1>404 当前 页面或资源 不存在或者已经移除。</h1>
+			</header>
+
+			<span class="image main"><img src="{{ url_for('static', filename='images/sad.jpg') }}" alt="" /></span>
+
+		</section>
+
+{% endblock %}
+
+<!-- SidebarBody -->
+{% block sidebarbody %}
+
+{% endblock %}
