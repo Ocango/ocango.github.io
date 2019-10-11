@@ -1,5 +1,16 @@
-from flask import Flask,render_template
+from datetime import timedelta
+
+from flask import Flask, jsonify, render_template
+from flask_jwt_extended import JWTManager
 from flask_restful import Api
+
+import main_parse
+from db import db
+from models.projects import ProjectModel
+from resources.projects import Project
+from models.articles import ArticleModel
+from resources.user import UserLogin, UserRegister
+from resources.articles import Article
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
@@ -7,21 +18,83 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 api = Api(app)
 
+#API管理，加入认证机制
+#可以用os.urandom(24)生成随机的密钥
+app.config['JWT_SECRET_KEY'] = b"\x8e\xaes\x01\xb7'p\xa81\xb7\x92\xca\xc5\x1a9^\xa3\x18\xb3\rOx<x"  # 也可以使用 app.secret 就像之前一样
+ACCESS_EXPIRES = timedelta(minutes=15)
+REFRESH_EXPIRES = timedelta(days=30)
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = ACCESS_EXPIRES
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = REFRESH_EXPIRES
+# app.config['JWT_BLACKLIST_ENABLED'] = True  # enable blacklist feature
+app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']  # allow blacklisting for access and refresh tokens
+jwt = JWTManager(app)
+
+
 # 全文处理，包括错误处理和预处理等
 
-# @app.before_first_request
-# def create_tables():
-#     db.create_all()
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
 @app.errorhandler(404)
 def page_not_found(e):
     # 页面未找到
     return render_template('errorpage/404.html'), 404
 
+# 用户认证
+@jwt.user_claims_loader
+def add_claims_to_jwt(identity):
+    if identity == 1:   # instead of hard-coding, we should read from a config file to get a list of admins instead
+        return {'is_admin': True}
+    return {'is_admin': False}
+
+@jwt.expired_token_loader
+def expired_token_callback():
+    return jsonify({
+        'message': '此令牌已失效。',
+        'error': 'token_expired'
+    }), 401
+
+
+@jwt.invalid_token_loader
+def invalid_token_callback(error):  # we have to keep the argument here, since it's passed in by the caller internally
+    return jsonify({
+        'message': '签名认证失败。',
+        'error': 'invalid_token'
+    }), 401
+
+
+@jwt.unauthorized_loader
+def missing_token_callback(error):
+    return jsonify({
+        "description": "请求不包含认证令牌。",
+        'error': 'authorization_required'
+    }), 401
+
+
+@jwt.needs_fresh_token_loader
+def token_not_fresh_callback():
+    return jsonify({
+        "description": "需要新令牌。",
+        'error': 'fresh_token_required'
+    }), 401
+
+
+@jwt.revoked_token_loader
+def revoked_token_callback():
+    return jsonify({
+        "description": "令牌已被撤销.",
+        'error': 'token_revoked'
+    }), 401
+
+
+
 # 连接地址
 @app.route('/')
 def index():
-    return render_template('index.html')
+    print(ProjectModel.get_all_projects_bydict())
+    print(ArticleModel.get_all_acricles_bydict())
+    return render_template('index.html',now_time=main_parse.welcome_home(),projects=ProjectModel.get_all_projects_bydict(),articles=ArticleModel.get_all_acricles_bydict())
 
 @app.route('/elements')
 def elements():
@@ -31,6 +104,15 @@ def elements():
 def generic():
     return render_template('generic.html')
 
+@app.route('/article/<string:topic>')
+def articles(topic):
+    return "bsd"
+
+api.add_resource(Project,'/api/project')
+# api.add_resource(UserRegister, '/api/register')#临时创建管理员用户，安保级别较高的请求需要JWT认证，所以注解不允许再创建用户
+api.add_resource(UserLogin, '/api/login')
+api.add_resource(Article,'/api/article')
+
 if __name__ == '__main__':
-    # db.init_app(app)
+    db.init_app(app)
     app.run(port=5000, debug=True)

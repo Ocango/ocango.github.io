@@ -9,107 +9,73 @@
 					<h1>嗨，这里是OcanGo的工作站</h1>
 					<p>一个丰富且高效的分享平台</p>
 				</header>
-				<p>Aenean ornare velit lacus, ac varius enim ullamcorper eu. Proin aliquam facilisis ante interdum congue. Integer mollis, nisl amet convallis, porttitor magna ullamcorper, amet egestas mauris. Ut magna finibus nisi nec lacinia. Nam maximus erat id euismod egestas. Pellentesque sapien ac quam. Lorem ipsum dolor sit nullam.</p>
+				<p>{{now_time}}</p>
+				<p>世界用寂静无声，催促我们长大，故事最后总是指向各奔天涯，年轻的心最后还是有了白发。这里是OcanGo的工作站。站内有故事，有吐槽，站内还有迷茫、不甘的灵魂，有果敢、莽撞的愣头青。OcanGo将会在站内挥毫技术，敢问英雄论道否！</p>
+				<div class="hiding">
+					<p>OcanGo工作站主要的技术方向为：Python Web、数据流分析与处理、C# Web + Winform（.net）、ETL、AWS、Linux，自研首要技术方向为ETL。本网站基于Flask Web开发，原模板为纯HTML5模板，服务器环境基于centos+nginx+uwsgi，服务器是腾讯云云服务器，DNS商以及SSL证书商为CloudFlare。集群环境基于Zookeeper，集群都属于云端服务器。</p>
+				</div>
 				<ul class="actions">
-					<li><a href="#" class="button big">Learn More</a></li>
+					<li><a class="button big" href="javascript:void(0)" onclick="showText(this)">继续阅读</a></li>
 				</ul>
 			</div>
 			<span class="image object">
-				<img src="{{ url_for('static', filename='images/pic10.jpg') }}" alt="" />
+				<img src="{{ url_for('static', filename='images/pic10.jpg') }}" alt="脸就是要大" />
 			</span>
 		</section>
 
 	<!-- Section -->
 		<section>
 			<header class="major">
-				<h2>Erat lacinia</h2>
+				<h2>功能展示</h2>
 			</header>
 			<div class="features">
+				{% for project in projects %}
 				<article>
-					<span class="icon fa-diamond"></span>
+						<span class="icon {{ project.icon }}"></span>
+						<div class="content">
+							<h3>{{project.name}}</h3>
+							<p>{{project.introduce}}</p>
+						</div>
+					</article>
+				{% endfor%}
+				
+				<article>
+					<span class="icon fa-ellipsis-h"></span>
 					<div class="content">
-						<h3>Portitor ullamcorper</h3>
-						<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
+						<h3>待续</h3>
+						<p>更多的内容正在规整中，可以先去GITHUB或者简书平台看看哦！</p>
 					</div>
 				</article>
-				<article>
-					<span class="icon fa-paper-plane"></span>
-					<div class="content">
-						<h3>Sapien veroeros</h3>
-						<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-					</div>
-				</article>
-				<article>
-					<span class="icon fa-rocket"></span>
-					<div class="content">
-						<h3>Quam lorem ipsum</h3>
-						<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-					</div>
-				</article>
-				<article>
-					<span class="icon fa-signal"></span>
-					<div class="content">
-						<h3>Sed magna finibus</h3>
-						<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-					</div>
-				</article>
+
 			</div>
 		</section>
 
 	<!-- Section -->
 		<section>
 			<header class="major">
-				<h2>Ipsum sed dolor</h2>
+				<h2>底层剖析</h2>
 			</header>
 			<div class="posts">
+				{% for article in articles %}
 				<article>
-					<a href="#" class="image"><img src="{{ url_for('static', filename='images/pic01.jpg') }}" alt="" /></a>
-					<h3>Interdum aenean</h3>
-					<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
+					{% if article.article_url %}
+					<a href="{{ url_for('articles',topic=article.topic) }}" class="image"><img src="{{ url_for('static', filename=article.picture_url) }}" alt="" /></a>
+					{% else %}
+					<a href="#" class="image"><img src="{{ url_for('static', filename=article.picture_url) }}" alt="" /></a>
+					{% endif %}
+					
+					<h3>{{article.topic}}</h3>
+					<p>{{article.introduce}}</p>
 					<ul class="actions">
-						<li><a href="#" class="button">More</a></li>
+						<li>
+							{% if article.article_url %}
+							<a href="{{url_for('articles',topic=article.topic)}}" class="button">更多</a></li>
+							{% else %}
+							<a href="#" class="button">更多</a></li>
+							{% endif %}
 					</ul>
 				</article>
-				<article>
-					<a href="#" class="image"><img src="{{ url_for('static', filename='images/pic02.jpg') }}" alt="" /></a>
-					<h3>Nulla amet dolore</h3>
-					<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-					<ul class="actions">
-						<li><a href="#" class="button">More</a></li>
-					</ul>
-				</article>
-				<article>
-					<a href="#" class="image"><img src="{{ url_for('static', filename='images/pic03.jpg') }}" alt="" /></a>
-					<h3>Tempus ullamcorper</h3>
-					<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-					<ul class="actions">
-						<li><a href="#" class="button">More</a></li>
-					</ul>
-				</article>
-				<article>
-					<a href="#" class="image"><img src="{{ url_for('static', filename='images/pic04.jpg') }}" alt="" /></a>
-					<h3>Sed etiam facilis</h3>
-					<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-					<ul class="actions">
-						<li><a href="#" class="button">More</a></li>
-					</ul>
-				</article>
-				<article>
-					<a href="#" class="image"><img src="{{ url_for('static', filename='images/pic05.jpg') }}" alt="" /></a>
-					<h3>Feugiat lorem aenean</h3>
-					<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-					<ul class="actions">
-						<li><a href="#" class="button">More</a></li>
-					</ul>
-				</article>
-				<article>
-					<a href="#" class="image"><img src="{{ url_for('static', filename='images/pic06.jpg') }}" alt="" /></a>
-					<h3>Amet varius aliquam</h3>
-					<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-					<ul class="actions">
-						<li><a href="#" class="button">More</a></li>
-					</ul>
-				</article>
+				{% endfor %}
 			</div>
 		</section>
 
