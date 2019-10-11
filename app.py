@@ -17,6 +17,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 api = Api(app)
+db.init_app(app)
 
 #API管理，加入认证机制
 #可以用os.urandom(24)生成随机的密钥
@@ -114,5 +115,4 @@ api.add_resource(UserLogin, '/api/login')
 api.add_resource(Article,'/api/article')
 
 if __name__ == '__main__':
-    db.init_app(app)
     app.run(port=5000, debug=True)
