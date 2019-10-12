@@ -40,7 +40,7 @@ class ArticleModel(db.Model):
     @classmethod
     def get_all_acricles_bydict(cls,maxindex = 6):
         '''抓取展示目录，默认最大值6'''
-        return [article.json() for article in cls.query.order_by(cls.weight.desc()).limit(maxindex).all()]
+        return [article.json() for article in (cls.query.order_by(cls.weight.desc()).limit(maxindex).all() if maxindex is not None else cls.query.order_by(cls.weight.desc()).all())]
 
     #查找重名
     @classmethod

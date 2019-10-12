@@ -109,10 +109,10 @@ def articles(topic):
     article = ArticleModel.find_by_id(topic)
     if article:
         project = ProjectModel.find_by_id(article.link_project)
-        articles = project.get_all_article()
+        articles = project.get_all_article(None)
     else:
         articles = None
-    return render_template('generic.html',article_id = topic,articles = articles['articles'])
+    return render_template('generic.html',article_id = topic,articles = articles['articles'],articles_len = len(articles['articles']))
 
 api.add_resource(Project,'/api/project')
 # api.add_resource(UserRegister, '/api/register')#临时创建管理员用户，安保级别较高的请求需要JWT认证，所以注解不允许再创建用户，其实也可以用设定管理员的方式通过add_claims_to_jwt验证，但是懒~··~

@@ -40,13 +40,13 @@ class ProjectModel(db.Model):
         return {
             'name':self.name,
             'id':self.id,
-            'articles': [article.json() for article in self.articles.limit(maxindex).all()]
+            'articles': [article.json() for article in (self.articles.limit(maxindex).all() if maxindex is not None else self.articles.all())]
         }
     #抓取展示目录，默认最大值4
     @classmethod
     def get_all_projects_bydict(cls,maxindex = 4):
         '''抓取展示目录，默认最大值4'''
-        return [project.json() for project in cls.query.order_by(cls.weight.desc()).limit(maxindex).all()]
+        return [project.json() for project in (cls.query.order_by(cls.weight.desc()).limit(maxindex).all() if maxindex is not None else cls.query.order_by(cls.weight.desc()).all())]
     
     #查找重名
     @classmethod
