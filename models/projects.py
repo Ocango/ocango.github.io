@@ -1,5 +1,6 @@
 from db import db
 from datetime import datetime
+from models.articles import ArticleModel
 
 class ProjectModel(db.Model):
     __tablename__='project'
@@ -9,20 +10,26 @@ class ProjectModel(db.Model):
     icon = db.Column(db.String(40))
     weight = db.Column(db.Integer,nullable=False)#权重,默认1,最大10，不实际卡控
     introduce = db.Column(db.String(1000))
+    article_url = db.Column(db.Boolean,default=False,nullable=False)
     create_time = db.Column(db.DateTime , nullable=False , default=datetime.now)
     articles = db.relationship('ArticleModel', lazy='dynamic')
 
-    def __init__(self, name, icon, introduce,weight = 1):
+    def __init__(self, name, icon, introduce,article_url,weight = 1):
         self.name = name
         self.icon = icon
         self.weight = weight
+        self.article_url = article_url
         self.introduce = introduce
 
     def json(self):
+        store = ArticleModel.find_by_topic(self.name)
         return {
+            "id":self.id,
             "name":self.name,
             "icon":self.icon,
-            "introduce":self.introduce
+            "introduce":self.introduce,
+            "article_url":self.article_url,
+            "article_id":store.id if store is not None else -1
         }
 
     def __repr__(self):
@@ -39,7 +46,17 @@ class ProjectModel(db.Model):
     def find_by_name(cls, name):
         '''查找重名'''
         return cls.query.filter_by(name=name).first()
-    
+
+    #当新增project时，新增关联article
+    def insert_link_article(self):
+        '''当新增project时，新增关联article'''
+        store = ArticleModel.find_by_topic(self.name)
+        if store:
+            return False
+        else:
+            newarticle = ArticleModel(self.name,'images/pic01.jpg',False,self.introduce,self.id,1)
+            newarticle.save_to_db()
+
     #project入库
     def save_to_db(self):
         '''project入库'''

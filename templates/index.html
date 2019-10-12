@@ -30,13 +30,13 @@
 			</header>
 			<div class="features">
 				{% for project in projects %}
-				<article>
-						<span class="icon {{ project.icon }}"></span>
-						<div class="content">
-							<h3>{{project.name}}</h3>
-							<p>{{project.introduce}}</p>
-						</div>
-					</article>
+				<article id="{{project.article_id}}" onclick="blink_to_acticle(this,'article')" class='clickable'>
+					<span class="icon {{ project.icon }}"></span>
+					<div class="content">
+						<h3>{{project.name}}</h3>
+						<p>{{project.introduce}}</p>
+					</div>
+				</article>
 				{% endfor%}
 				
 				<article>
@@ -59,7 +59,7 @@
 				{% for article in articles %}
 				<article>
 					{% if article.article_url %}
-					<a href="{{ url_for('articles',topic=article.topic) }}" class="image"><img src="{{ url_for('static', filename=article.picture_url) }}" alt="" /></a>
+					<a href="{{ url_for('articles',topic=article.id) }}" class="image"><img src="{{ url_for('static', filename=article.picture_url) }}" alt="" /></a>
 					{% else %}
 					<a href="#" class="image"><img src="{{ url_for('static', filename=article.picture_url) }}" alt="" /></a>
 					{% endif %}
@@ -69,7 +69,7 @@
 					<ul class="actions">
 						<li>
 							{% if article.article_url %}
-							<a href="{{url_for('articles',topic=article.topic)}}" class="button">更多</a></li>
+							<a href="{{url_for('articles',topic=article.id)}}" class="button">更多</a></li>
 							{% else %}
 							<a href="#" class="button">更多</a></li>
 							{% endif %}
@@ -85,7 +85,7 @@
 {% block sidebarbody %}
 
 	<!-- Section -->
-		<section>
+		<!-- <section>
 			<header class="major">
 				<h2>Ante interdum</h2>
 			</header>
@@ -94,18 +94,10 @@
 					<a href="#" class="image"><img src="{{ url_for('static', filename='images/pic07.jpg') }}" alt="" /></a>
 					<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
 				</article>
-				<article>
-					<a href="#" class="image"><img src="{{ url_for('static', filename='images/pic08.jpg') }}" alt="" /></a>
-					<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
-				</article>
-				<article>
-					<a href="#" class="image"><img src="{{ url_for('static', filename='images/pic09.jpg') }}" alt="" /></a>
-					<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
-				</article>
 			</div>
 			<ul class="actions">
 				<li><a href="#" class="button">More</a></li>
 			</ul>
-		</section>
+		</section> -->
 
 {% endblock %}

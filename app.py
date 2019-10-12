@@ -35,6 +35,7 @@ jwt = JWTManager(app)
 
 @app.before_first_request
 def create_tables():
+    print(1)
     db.create_all()
 
 @app.errorhandler(404)
@@ -105,12 +106,12 @@ def elements():
 def generic():
     return render_template('generic.html')
 
-@app.route('/article/<string:topic>')
+@app.route('/article/<int:topic>')
 def articles(topic):
-    return "bsd"
+    return render_template('generic.html',article_id = topic)
 
 api.add_resource(Project,'/api/project')
-# api.add_resource(UserRegister, '/api/register')#临时创建管理员用户，安保级别较高的请求需要JWT认证，所以注解不允许再创建用户
+# api.add_resource(UserRegister, '/api/register')#临时创建管理员用户，安保级别较高的请求需要JWT认证，所以注解不允许再创建用户，其实也可以用设定管理员的方式通过add_claims_to_jwt验证，但是懒~··~
 api.add_resource(UserLogin, '/api/login')
 api.add_resource(Article,'/api/article')
 

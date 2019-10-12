@@ -2448,6 +2448,11 @@ input, select, textarea {
 				border-top: 0;
 			}
 
+/*创建可点击区块*/
+.clickable{
+	cursor: pointer;
+}
+
 /* Button */
 
 	input[type="submit"],

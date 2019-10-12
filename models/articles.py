@@ -7,7 +7,7 @@ class ArticleModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     topic = db.Column(db.String(80))
     picture_url = db.Column(db.String(80))
-    article_url = db.Column(db.String(80))
+    article_url = db.Column(db.Boolean,default=False,nullable=False)
     weight = db.Column(db.Integer,nullable=False)#权重,默认1,最大10，不实际卡控
     introduce = db.Column(db.String(1000))
     link_project = db.Column(db.Integer, db.ForeignKey('project.id'))
@@ -23,10 +23,12 @@ class ArticleModel(db.Model):
     
     def json(self):
         return {
+            "id":self.id,
             "topic":self.topic,
             "picture_url":self.picture_url,
             "article_url":self.article_url,
-            "introduce":self.introduce
+            "introduce":self.introduce,
+            "link_project":self.link_project
         }
     
     def __repr__(self):
@@ -44,8 +46,8 @@ class ArticleModel(db.Model):
         '''查找重名'''
         return cls.query.filter_by(topic=topic).first()
     
-    #project入库
+    #article入库
     def save_to_db(self):
-        '''project入库'''
+        '''article入库'''
         db.session.add(self)
         db.session.commit()
