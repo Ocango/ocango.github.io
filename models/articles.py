@@ -13,6 +13,8 @@ class ArticleModel(db.Model):
     link_project = db.Column(db.Integer, db.ForeignKey('project.id'))
     create_time = db.Column(db.DateTime , nullable=False , default=datetime.now)
 
+    store = db.relationship('ProjectModel')
+
     def __init__(self, topic, picture_url, article_url,introduce,link_project,weight = 1):
         self.topic = topic
         self.picture_url = picture_url
@@ -45,7 +47,11 @@ class ArticleModel(db.Model):
     def find_by_topic(cls, topic):
         '''查找重名'''
         return cls.query.filter_by(topic=topic).first()
-    
+    #查找，依据id
+    @classmethod
+    def find_by_id(cls,id):
+        '''查找，依据id'''
+        return cls.query.filter_by(id=id).first()
     #article入库
     def save_to_db(self):
         '''article入库'''

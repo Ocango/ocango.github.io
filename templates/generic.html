@@ -45,21 +45,15 @@
 				<h2>Ante interdum</h2>
 			</header>
 			<div class="mini-posts">
+				{% for article in articles %}
 				<article>
-					<a href="#" class="image"><img src="{{ url_for('static', filename='images/pic07.jpg') }}" alt="" /></a>
-					<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+					<a href="{{ url_for('articles',topic=article.id) }}" class="image"><img src="{{ url_for('static', filename=article.picture_url) }}" alt="" /></a>
+					<p>{{article.introduce}}</p>
 				</article>
-				<article>
-					<a href="#" class="image"><img src="{{ url_for('static', filename='images/pic08.jpg') }}" alt="" /></a>
-					<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
-				</article>
-				<article>
-					<a href="#" class="image"><img src="{{ url_for('static', filename='images/pic09.jpg') }}" alt="" /></a>
-					<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
-				</article>
+				{% endfor %}
 			</div>
 			<ul class="actions">
-				<li><a href="#" class="button">More</a></li>
+				<li><a href="#" class="button">显示所有</a></li>
 			</ul>
 		</section>
 

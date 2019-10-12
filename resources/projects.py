@@ -55,15 +55,15 @@ class Project(Resource):
         data = _user_parser.parse_args()
         store = ProjectModel.find_by_name(data['name'])
         if store:
-            store.icon = data['icon'] if data['icon'] is not None else 'fa-newspaper-o'
-            store.introduce = data['introduce']
-            store.article_url = data['article_url']
-            store.weight = data['weight']
+            store.icon = data['icon'] if data['icon'] is not None else store.icon
+            store.introduce = data['introduce'] if data['introduce'] is not None else store.introduce
+            store.article_url = data['article_url'] if data['article_url'] is not None else store.article_url
+            store.weight = data['weight'] if data['weight'] is not None else store.weight
         else:
             store = ProjectModel(data['name'],data['icon'] if data['icon'] is not None else 'fa-newspaper-o',data['introduce'],data['article_url'],data['weight'])
-            store.insert_link_article()
         try:
             store.save_to_db()
+            store.insert_link_article()
         except:
             return {"message": "后台数据处理发生异常，请联系网站管理员。"}, 500
 

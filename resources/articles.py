@@ -58,10 +58,9 @@ class Article(Resource):
         if store:
             if store.link_project == data['link_project']:
                 store.picture_url = data['picture_url'] if data['picture_url'] is not None else 'images/pic01.jpg'
-                store.introduce = data['introduce']
-                store.article_url = data['article_url']
-                store.weight = data['weight']
-                store.weight = data['weight']
+                store.introduce = data['introduce'] if data['introduce'] is not None else store.introduce
+                store.article_url = data['article_url'] if data['article_url'] is not None else store.article_url
+                store.weight = data['weight'] if data['weight'] is not None else store.weight
             else:
                 return {"message": "禁止修改对应的专题链接。"}, 400
         else:

@@ -35,6 +35,13 @@ class ProjectModel(db.Model):
     def __repr__(self):
         return '<ProjectModel (name=%r,weight=%r,introduce=%r)>' % (self.name,self.weight,self.introduce)
 
+    def get_all_article(self,maxindex = 3):
+        '''获得关联article，默认最大值3'''
+        return {
+            'name':self.name,
+            'id':self.id,
+            'articles': [article.json() for article in self.articles.limit(maxindex).all()]
+        }
     #抓取展示目录，默认最大值4
     @classmethod
     def get_all_projects_bydict(cls,maxindex = 4):
@@ -46,7 +53,11 @@ class ProjectModel(db.Model):
     def find_by_name(cls, name):
         '''查找重名'''
         return cls.query.filter_by(name=name).first()
-
+    #查找重名
+    @classmethod
+    def find_by_id(cls, id):
+        '''查找重名'''
+        return cls.query.filter_by(id=id).first()
     #当新增project时，新增关联article
     def insert_link_article(self):
         '''当新增project时，新增关联article'''

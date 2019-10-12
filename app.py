@@ -9,7 +9,7 @@ from db import db
 from models.projects import ProjectModel
 from resources.projects import Project
 from models.articles import ArticleModel
-from resources.user import UserLogin, UserRegister
+from resources.user import UserLogin, UserRegister,TokenRefresh
 from resources.articles import Article
 
 app = Flask(__name__)
@@ -35,7 +35,6 @@ jwt = JWTManager(app)
 
 @app.before_first_request
 def create_tables():
-    print(1)
     db.create_all()
 
 @app.errorhandler(404)
@@ -94,7 +93,6 @@ def revoked_token_callback():
 # 连接地址
 @app.route('/')
 def index():
-    print(ProjectModel.get_all_projects_bydict())
     print(ArticleModel.get_all_acricles_bydict())
     return render_template('index.html',now_time=main_parse.welcome_home(),projects=ProjectModel.get_all_projects_bydict(),articles=ArticleModel.get_all_acricles_bydict())
 
@@ -108,12 +106,19 @@ def generic():
 
 @app.route('/article/<int:topic>')
 def articles(topic):
-    return render_template('generic.html',article_id = topic)
+    article = ArticleModel.find_by_id(topic)
+    if article:
+        project = ProjectModel.find_by_id(article.link_project)
+        articles = project.get_all_article()
+    else:
+        articles = None
+    return render_template('generic.html',article_id = topic,articles = articles['articles'])
 
 api.add_resource(Project,'/api/project')
 # api.add_resource(UserRegister, '/api/register')#临时创建管理员用户，安保级别较高的请求需要JWT认证，所以注解不允许再创建用户，其实也可以用设定管理员的方式通过add_claims_to_jwt验证，但是懒~··~
 api.add_resource(UserLogin, '/api/login')
 api.add_resource(Article,'/api/article')
+api.add_resource(TokenRefresh, '/api/refresh')#刷新令牌机制
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
