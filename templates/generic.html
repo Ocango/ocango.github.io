@@ -20,9 +20,44 @@
 			<p>后端建站采用了Flask的常规建站方式，这三者分别干了什么，这三者又如何互补，可以参考 <strong><a href="https://www.jianshu.com/p/a1ecd2e75e2b">一个小型的资源管理站</a></strong> ，有较为详细的说明。如果比较懒于深入研究的话，稍后会补上具体的配置方法相关的链接。</p>
 			<hr class="major" />
 			<h2 id="建站基础">建站基础</h2>
-			<p>建站那自然是越便宜越好，腾讯云的优惠政策比较多，所以如果要选择国内的服务器站点，腾讯云是比较好的。如果有人有些奇怪的想法，比如附加建立一个反代站，或者做VPN之类的，那就选择国外的服务器，这方面不了解就不介绍了。Cloudflare则是一个非常优秀的DNS与SSL服务商（主要是免费），可以实现非常多的功能：HTTPS验证、DNS代理、洋葱路由、流量与安全管理、过滤攻击。。。。。。等等非常多的功能，不得不说，确实国外互联网发展历史悠久，功能结构完善。
-			所有的一切这样就安排好了，最后晒晒近一周的成果。</p>
+			<p>建站那自然是越便宜越好，腾讯云的优惠政策比较多，所以如果要选择国内的服务器站点，腾讯云是比较好的。至于域名，顶级域名最便宜的就是.cn了，一般来说36元/年。如果有人有些奇怪的想法，比如附加建立一个反代站，或者做VPN之类的，那就选择国外的服务器，这方面不了解就不介绍了。</p>
+			<p>Cloudflare则是一个非常优秀的DNS与SSL服务商（主要是免费），可以实现非常多的功能：HTTPS验证、DNS代理、洋葱路由、流量与安全管理、过滤攻击。。。。。。等等非常多的功能，不得不说，确实国外互联网发展历史悠久，功能结构完善。</p>
+			<p>所有的一切这样就安排好了，最后晒晒近一周的成果。</p>
 			<span class="image main"><img src="{{url_for('static',filename='images/2/DD428E54-AC60-4342-B9B4-DF6CD096D8D0.png')}}" alt="晒个大脸" /></span>
+			<div class="table-wrapper">
+				<table>
+					<thead>
+						<tr>
+							<th>体系</th>
+							<th>基本架构</th>
+							<th>价值</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>前端</td>
+							<td>HTML5+CSS3+jinja2+JS</td>
+							<td>20根头发</td>
+						</tr>
+						<tr>
+							<td>后端</td>
+							<td>centos+nginx+flask+uwsgi</td>
+							<td>60根头发</td>
+						</tr>
+						<tr>
+							<td>建站</td>
+							<td>腾讯云+cloudflare</td>
+							<td>156元/年</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="2"></td>
+							<td>156元/年</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
 		</section>
 
 {% endblock %}
