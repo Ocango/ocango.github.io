@@ -93,6 +93,7 @@ def revoked_token_callback():
 # 连接地址
 @app.route('/')
 def index():
+    print(ProjectModel.get_all_projects_bydict())
     print(ArticleModel.get_all_acricles_bydict())
     return render_template('index.html',now_time=main_parse.welcome_home(),projects=ProjectModel.get_all_projects_bydict(),articles=ArticleModel.get_all_acricles_bydict())
 
@@ -100,9 +101,9 @@ def index():
 def elements():
     return render_template('elements.html')
 
-@app.route('/generic')
-def generic():
-    return render_template('generic.html')
+# @app.route('/generic')
+# def generic():
+#     return render_template('generic.html')
 
 @app.route('/article/<int:topic>')
 def articles(topic):
@@ -112,7 +113,7 @@ def articles(topic):
         articles = project.get_all_article(None)
     else:
         articles = None
-    return render_template('generic.html',article_id = topic,articles = articles['articles'],articles_len = len(articles['articles']))
+    return render_template('generic.html',article_id = topic,articles = {"articles_len" : len(articles['articles']),"articles":articles['articles']},)
 
 api.add_resource(Project,'/api/project')
 # api.add_resource(UserRegister, '/api/register')#临时创建管理员用户，安保级别较高的请求需要JWT认证，所以注解不允许再创建用户，其实也可以用设定管理员的方式通过add_claims_to_jwt验证，但是懒~··~
