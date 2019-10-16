@@ -26,4 +26,10 @@ def welcome_home():
     welcome_text += '' +'今天是' + now_time.strftime('%m') + '月' + now_time.strftime('%d') + '日。'
     return welcome_text
 
-#index功能库
+#API功能库
+##MarkDown转化HTML,
+def exe_mdToHTML():
+    '''传入content对象'''
+    pass
+
+#articles接口功能库
