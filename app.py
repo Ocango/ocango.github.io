@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template,abort
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 
@@ -9,8 +9,10 @@ from db import db
 from models.projects import ProjectModel
 from resources.projects import Project
 from models.articles import ArticleModel
+from models.content import ContentModel
 from resources.user import UserLogin, UserRegister,TokenRefresh
 from resources.articles import Article
+from resources.content import Content
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
@@ -110,16 +112,35 @@ def articles(topic):
     article = ArticleModel.find_by_id(topic)
     if article:
         project = ProjectModel.find_by_id(article.link_project)
-        articles = project.get_all_article(None)
+        articles_list = project.get_all_article(None)
+        content = ContentModel.find_by_id(article.id)
+        if content:
+            article_content = content.content_HTML
+        else:
+            article_content = None
     else:
-        articles = None
-    return render_template('generic.html',article_id = topic,articles = {"articles_len" : len(articles['articles']),"articles":articles['articles']},)
+        abort(404)
+    print({
+    "articles_len" : len(articles_list['articles']),
+    "articles":articles_list['articles'],
+    "article_name":article.topic})
+    return render_template(
+        'generic.html',
+        article_id = topic,
+        articles = {
+            "articles_len" : len(articles_list['articles']),
+            "articles":articles_list['articles'],
+            "article_content":article_content,
+            "article_name":article.topic},
+        )
 
 api.add_resource(Project,'/api/project')
 # api.add_resource(UserRegister, '/api/register')#临时创建管理员用户，安保级别较高的请求需要JWT认证，所以注解不允许再创建用户，其实也可以用设定管理员的方式通过add_claims_to_jwt验证，但是懒~··~
 api.add_resource(UserLogin, '/api/login')
 api.add_resource(Article,'/api/article')
 api.add_resource(TokenRefresh, '/api/refresh')#刷新令牌机制
+api.add_resource(Content, '/api/content')
+
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

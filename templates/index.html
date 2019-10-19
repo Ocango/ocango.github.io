@@ -58,21 +58,15 @@
 			<div class="posts">
 				{% for article in articles %}
 				<article>
-					{% if article.article_url %}
 					<a href="{{ url_for('articles',topic=article.id) }}" class="image"><img src="{{ url_for('static', filename=article.picture_url) }}" alt="" /></a>
-					{% else %}
-					<a href="#" class="image"><img src="{{ url_for('static', filename=article.picture_url) }}" alt="" /></a>
-					{% endif %}
+
 					
 					<h3>{{article.topic}}</h3>
 					<p>{{article.introduce}}</p>
 					<ul class="actions">
 						<li>
-							{% if article.article_url %}
 							<a href="{{url_for('articles',topic=article.id)}}" class="button">更多</a></li>
-							{% else %}
-							<a href="#" class="button">更多</a></li>
-							{% endif %}
+
 					</ul>
 				</article>
 				{% endfor %}

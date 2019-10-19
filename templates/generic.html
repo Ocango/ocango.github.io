@@ -4,60 +4,14 @@
 
 	<!-- Content -->
 		<section>
-	
-			<p>国庆过来之后，一直就想着，为自己做个项目，尤其是一些零散的研究目标，用网络服务的方式公开出来。即是对于人生的一份很好的答卷，也能建立起一座沟通的桥梁。结合最近和以前的能力面，建立了如下的方案：</p>
-			<ul>
-			<li>寻求前端基础，目标方案：HTML5 UP</li>
-			<li>寻求后端基础，目标方案：Nginx+uWSGI+Flask</li>
-			<li>寻求建站基础，目标方案：腾讯云+Cloudflare</li>
-			</ul>
-			<hr class="major" />
-			<h2 id="前端基础">前端基础</h2>
-			<p><strong><em>HTML5 UP</em></strong>是当前上学的时候，找到的一个非常优秀的前端模板网站，正如它的简介所说：Fully <strong>Responsive</strong>、Built on intelligent <strong>HTML5 + CSS3</strong>、Super <strong>Customizable</strong>、<strong>100% Free</strong> under the Creative Commons。如果单纯的只是想找自适应模板，<strong><em>HTML5 UP</em></strong>都是最最基础的原生HTML5+CSS3自适应模板，这种单纯加上模板免费的特性，给个人开发者很大的自由度和深度研习的机会。</p>
-			<p>目前<a href="https://www.ocango.cn">OcanGo的个站</a>建立在模板<strong>Editorial</strong>之上，并一定程度上修改为了动态页面，优秀的模板原生CSS样式甚至带来了惊奇的影响——对于MarkDown文档的处理。当我们采用工具将MarkDown文章作为HTML页面打开时，导入不同的样式表给予了页面很大的可能性。我们完全可以用MarkDown编辑工具来编辑网页（是不是很像WordPress，是的确实是这样。简书同时也是这样）,当然这种奇淫异巧在已知掌握如何在网页内嵌MarkDown编辑工具的情况下，就微不足道了，哈哈，一步一个脚印吧。</p>
-			<hr class="major" />
-			<h2 id="后端基础">后端基础</h2>
-			<p>后端建站采用了Flask的常规建站方式，这三者分别干了什么，这三者又如何互补，可以参考 <strong><a href="https://www.jianshu.com/p/a1ecd2e75e2b">一个小型的资源管理站</a></strong> ，有较为详细的说明。如果比较懒于深入研究的话，稍后会补上具体的配置方法相关的链接。</p>
-			<hr class="major" />
-			<h2 id="建站基础">建站基础</h2>
-			<p>建站那自然是越便宜越好，腾讯云的优惠政策比较多，所以如果要选择国内的服务器站点，腾讯云是比较好的。至于域名，顶级域名最便宜的就是.cn了，一般来说36元/年。如果有人有些奇怪的想法，比如附加建立一个反代站，或者做VPN之类的，那就选择国外的服务器，这方面不了解就不介绍了。</p>
-			<p>Cloudflare则是一个非常优秀的DNS与SSL服务商（主要是免费），可以实现非常多的功能：HTTPS验证、DNS代理、洋葱路由、流量与安全管理、过滤攻击。。。。。。等等非常多的功能，不得不说，确实国外互联网发展历史悠久，功能结构完善。</p>
-			<p>所有的一切这样就安排好了，最后晒晒近一周的成果。</p>
-			<span class="image main"><img src="{{url_for('static',filename='images/2/DD428E54-AC60-4342-B9B4-DF6CD096D8D0.png')}}" alt="晒个大脸" /></span>
-			<div class="table-wrapper">
-				<table>
-					<thead>
-						<tr>
-							<th>体系</th>
-							<th>基本架构</th>
-							<th>价值</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>前端</td>
-							<td>HTML5+CSS3+jinja2+JS</td>
-							<td>20根头发</td>
-						</tr>
-						<tr>
-							<td>后端</td>
-							<td>centos+nginx+flask+uwsgi</td>
-							<td>60根头发</td>
-						</tr>
-						<tr>
-							<td>建站</td>
-							<td>腾讯云+cloudflare</td>
-							<td>156元/年</td>
-						</tr>
-					</tbody>
-					<tfoot>
-						<tr>
-							<td colspan="2"></td>
-							<td>156元/年</td>
-						</tr>
-					</tfoot>
-				</table>
-			</div>
+			<header class="main">
+				<h1>{{articles['article_name']}}</h1>
+			</header>
+			{% if articles['article_content'] %}
+				{{ articles['article_content'] | safe }}
+			{% else %}
+				<p>暂时没有相关的内容。</p>
+			{% endif %}
 		</section>
 
 {% endblock %}
@@ -71,26 +25,28 @@
 			<h2>推荐链接</h2>
 		</header>
 		<div class="mini-posts">
-			{% for article in articles['articles'][:3] %}
+			{% for article in articles['articles'][:2] %}
 			<article>
 				<a href="{{ url_for('articles',topic=article.id) }}" class="image"><img src="{{ url_for('static', filename=article.picture_url) }}" alt="" /></a>
 				<p>{{article.introduce}}</p>
 			</article>
 			{% endfor %}
-		</div>
-		<div class="hiding">
-			{% for article in articles['articles'][:3] %}
-			<article>
-				<a href="{{ url_for('articles',topic=article.id) }}" class="image"><img src="{{ url_for('static', filename=article.picture_url) }}" alt="" /></a>
-				<p>{{article.introduce}}</p>
-			</article>
+
+			{% for article in articles['articles'][2:] %}
+			<div class="hiding">
+				
+				<article>
+					<a href="{{ url_for('articles',topic=article.id) }}" class="image"><img src="{{ url_for('static', filename=article.picture_url) }}" alt="" /></a>
+					<p>{{article.introduce}}</p>
+				</article>
+
+			</div>
+			<ul class="actions">
+				<li><a href="javascript:void(0)" class="button" onclick="showText(this)">显示所有</a></li>
+			</ul>
 			{% endfor %}
 		</div>
-		{% if articles['articles_len'] > 2 %}
-		<ul class="actions">
-			<li><a href="javascript:void(0)" class="button" onclick="showText(this)">显示所有</a></li>
-		</ul>
-		{% endif %}
+
 	</section>
 
 {% endblock %}

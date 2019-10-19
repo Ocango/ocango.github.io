@@ -1,5 +1,6 @@
 from pytz import timezone
 from datetime import datetime
+from func_tool.beautifulofmd import BeautifulOfMD,modify_image_tag
 
 #时区控制
 cst_tz = timezone('Asia/Shanghai')
@@ -28,8 +29,9 @@ def welcome_home():
 
 #API功能库
 ##MarkDown转化HTML,
-def exe_mdToHTML():
+def exe_mdToHTML(my_content):
     '''传入content对象'''
-    pass
+    html = BeautifulOfMD()
+    my_content.content_HTML = html.convert_to_HTML(my_content.content_md,modify_image_tag(my_content.id))
 
 #articles接口功能库

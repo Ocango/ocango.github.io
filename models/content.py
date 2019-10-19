@@ -1,5 +1,6 @@
 from db import db
 from datetime import datetime
+from models.articles import ArticleModel
 
 class ContentModel(db.Model):
     __tablename__='content'
@@ -26,9 +27,13 @@ class ContentModel(db.Model):
         '''查找重号,获取id对应资料'''
         return cls.query.filter_by(id=id).first()
 
-
     #content入库
-    def save_to_db(self):
+    def save_to_db(self,article_obj):
         '''content入库,记得一定要验证article存在性，此处不做验证'''
+        if self.content_HTML:
+            article_obj.article_url = True
+        else :
+            article_obj.article_url = False
+        article_obj.save_to_db()
         db.session.add(self)
         db.session.commit()
