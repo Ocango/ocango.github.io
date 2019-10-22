@@ -2,6 +2,7 @@ from flask_restful import Resource,reqparse
 from flask_jwt_extended import get_jwt_identity, jwt_required, get_jwt_claims, fresh_jwt_required, jwt_optional
 
 from models.projects import ProjectModel
+from models.articles import ArticleModel
 
 _user_parser = reqparse.RequestParser()
 _user_parser.add_argument('name',
@@ -43,7 +44,7 @@ class Project(Resource):
         store = ProjectModel(data['name'],data['icon'] if data['icon'] is not None else 'fa-newspaper-o',data['introduce'],data['article_url'],data['weight'])
         try:
             store.save_to_db()
-            store.insert_link_article()
+            ArticleModel.insert_link_article(store)
         except:
             return {"message": "后台数据处理发生异常，请联系网站管理员。"}, 500
 
@@ -63,7 +64,7 @@ class Project(Resource):
             store = ProjectModel(data['name'],data['icon'] if data['icon'] is not None else 'fa-newspaper-o',data['introduce'],data['article_url'],data['weight'])
         try:
             store.save_to_db()
-            store.insert_link_article()
+            ArticleModel.insert_link_article(store)
         except:
             return {"message": "后台数据处理发生异常，请联系网站管理员。"}, 500
 

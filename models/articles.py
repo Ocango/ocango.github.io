@@ -1,5 +1,6 @@
 from db import db
 from datetime import datetime
+from models.projects import ProjectModel
 
 class ArticleModel(db.Model):
     __tablename__='article'
@@ -36,6 +37,19 @@ class ArticleModel(db.Model):
     def __repr__(self):
         return '<ArticleModel (topic=%r,introduce=%r,link_project=%r)>' % (self.topic,self.introduce,self.link_project)
     
+    #抓取sidebar目录,全部
+    @classmethod
+    def get_all_acricles_bytree(cls):
+        '''抓取sidebar目录,全部'''
+        return [
+            {
+                "project_name":project.name,
+                "link_articles":[
+                    article.json() for article in project.articles
+                    ]
+            } for project in ProjectModel.query.all()
+        ]
+
     #抓取展示目录，默认最大值4
     @classmethod
     def get_all_acricles_bydict(cls,maxindex = 6):
@@ -57,3 +71,13 @@ class ArticleModel(db.Model):
         '''article入库'''
         db.session.add(self)
         db.session.commit()
+    
+    @classmethod
+    def insert_link_article(cls,project_obj):
+        '''当新增project时，新增关联article'''
+        store = cls.find_by_topic(project_obj.name)
+        if store:
+            return False
+        else:
+            newarticle = ArticleModel(project_obj.name,'images/pic01.jpg',False,project_obj.introduce,project_obj.id,1)
+            newarticle.save_to_db()

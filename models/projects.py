@@ -1,6 +1,5 @@
 from db import db
 from datetime import datetime
-from models.articles import ArticleModel
 
 class ProjectModel(db.Model):
     __tablename__='project'
@@ -13,6 +12,7 @@ class ProjectModel(db.Model):
     article_url = db.Column(db.Boolean,default=False,nullable=False)
     create_time = db.Column(db.DateTime , nullable=False , default=datetime.now)
     articles = db.relationship('ArticleModel', lazy='dynamic')
+    features = db.relationship('FeatureModel', lazy='dynamic')
 
     def __init__(self, name, icon, introduce,article_url,weight = 1):
         self.name = name
@@ -22,7 +22,7 @@ class ProjectModel(db.Model):
         self.introduce = introduce
 
     def json(self):
-        store = ArticleModel.find_by_topic(self.name)
+        store = self.articles.filter_by(topic=self.name).first()
         return {
             "id":self.id,
             "name":self.name,
@@ -42,12 +42,23 @@ class ProjectModel(db.Model):
             'id':self.id,
             'articles': [article.json() for article in (self.articles.limit(maxindex).all() if maxindex is not None else self.articles.all())]
         }
+    #抓取sidebar目录,全部
+    @classmethod
+    def get_all_projects_bytree(cls):
+        return [
+            {
+                'id':project.id,
+                'name':project.name
+            } for project in cls.query.all()
+        ]
+
     #抓取展示目录，默认最大值4
     @classmethod
     def get_all_projects_bydict(cls,maxindex = 4):
         '''抓取展示目录，默认最大值4'''
         return [project.json() for project in (cls.query.order_by(cls.weight.desc()).limit(maxindex).all() if maxindex is not None else cls.query.order_by(cls.weight.desc()).all())]
     
+
     #查找重名
     @classmethod
     def find_by_name(cls, name):
@@ -58,15 +69,7 @@ class ProjectModel(db.Model):
     def find_by_id(cls, id):
         '''查找重名'''
         return cls.query.filter_by(id=id).first()
-    #当新增project时，新增关联article
-    def insert_link_article(self):
-        '''当新增project时，新增关联article'''
-        store = ArticleModel.find_by_topic(self.name)
-        if store:
-            return False
-        else:
-            newarticle = ArticleModel(self.name,'images/pic01.jpg',False,self.introduce,self.id,1)
-            newarticle.save_to_db()
+
 
     #project入库
     def save_to_db(self):

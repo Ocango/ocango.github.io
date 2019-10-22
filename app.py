@@ -13,6 +13,7 @@ from models.content import ContentModel
 from resources.user import UserLogin, UserRegister,TokenRefresh
 from resources.articles import Article
 from resources.content import Content
+from models.feature import FeatureModel
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
@@ -95,13 +96,18 @@ def revoked_token_callback():
 # 连接地址
 @app.route('/')
 def index():
-    print(ProjectModel.get_all_projects_bydict())
-    print(ArticleModel.get_all_acricles_bydict())
-    return render_template('index.html',now_time=main_parse.welcome_home(),projects=ProjectModel.get_all_projects_bydict(),articles=ArticleModel.get_all_acricles_bydict())
+    print(ProjectModel.get_all_projects_bytree())
+    return render_template(
+        'index.html',
+        now_time=main_parse.welcome_home(),
+        projects=ProjectModel.get_all_projects_bydict(),
+        articles=ArticleModel.get_all_acricles_bydict(),
+        sidebar_project = ProjectModel.get_all_projects_bytree()
+    )
 
 @app.route('/elements')
 def elements():
-    return render_template('elements.html')
+    return render_template('elements.html',sidebar_project = ProjectModel.get_all_projects_bytree())
 
 # @app.route('/generic')
 # def generic():
@@ -120,10 +126,6 @@ def articles(topic):
             article_content = None
     else:
         abort(404)
-    print({
-    "articles_len" : len(articles_list['articles']),
-    "articles":articles_list['articles'],
-    "article_name":article.topic})
     return render_template(
         'generic.html',
         article_id = topic,
@@ -132,7 +134,12 @@ def articles(topic):
             "articles":articles_list['articles'],
             "article_content":article_content,
             "article_name":article.topic},
+        sidebar_project = ProjectModel.get_all_projects_bytree()
         )
+
+@app.route('/query_item/<string:whereitem>/<string:wherestr>')
+def query_item(whereitem,wherestr):
+    return render_template('elements.html',sidebar_project = ProjectModel.get_all_projects_bytree())
 
 api.add_resource(Project,'/api/project')
 # api.add_resource(UserRegister, '/api/register')#临时创建管理员用户，安保级别较高的请求需要JWT认证，所以注解不允许再创建用户，其实也可以用设定管理员的方式通过add_claims_to_jwt验证，但是懒~··~
