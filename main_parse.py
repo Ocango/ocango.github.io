@@ -1,6 +1,7 @@
 from pytz import timezone
 from datetime import datetime
 from func_tool.beautifulofmd import BeautifulOfMD,modify_image_tag
+from models.projects import ProjectModel
 
 #时区控制
 cst_tz = timezone('Asia/Shanghai')
@@ -35,3 +36,17 @@ def exe_mdToHTML(my_content):
     my_content.content_HTML = html.convert_to_HTML(my_content.content_md,modify_image_tag(my_content.id))
 
 #articles接口功能库
+def querystr(whereitem,wherestr):
+    '''
+    转置查询条件为可读，目前有：
+    case whereitem:
+    when link_project:主题：project_name
+    when link_date:时间：xx年xx月
+    otherwise:内容包含：xxxxx
+    '''
+    if whereitem == 'link_project':
+        return "主题：" + ProjectModel.find_by_id(wherestr).name
+    elif whereitem == 'link_date':
+        return "时间：" + wherestr[2:4] + "年" + wherestr[5:7] + "月"
+    else:
+        return "内容包含：" + wherestr

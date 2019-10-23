@@ -9,3 +9,8 @@ function blink_to_acticle(blink_block,link_url){
     // alert(url)
     window.location.href=url;
 }
+function blink_to_query(blink_block,query_url){
+    var url = '/query_item/'+query_url+'/'+$(blink_block).text().substr(0,7)
+    // alert(url)
+    window.location.href=url;
+}

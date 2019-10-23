@@ -31,7 +31,8 @@ class ArticleModel(db.Model):
             "picture_url":self.picture_url,
             "article_url":self.article_url,
             "introduce":self.introduce,
-            "link_project":self.link_project
+            "link_project":self.link_project,
+            "data_str":self.create_time.strftime('%Y-%m-%d')
         }
     
     def __repr__(self):
@@ -39,16 +40,26 @@ class ArticleModel(db.Model):
     
     #抓取sidebar目录,全部
     @classmethod
-    def get_all_acricles_bytree(cls):
+    def get_all_acricles_bytree(cls,whereitem,wherestr):
         '''抓取sidebar目录,全部'''
-        return [
-            {
-                "project_name":project.name,
-                "link_articles":[
-                    article.json() for article in project.articles
-                    ]
-            } for project in ProjectModel.query.all()
-        ]
+        if whereitem == 'link_project':
+            return [
+                {
+                    "project_name":project.name,
+                    "link_articles":[
+                        article.json() for article in project.articles
+                        ]
+                } for project in ProjectModel.query.filter_by(id = wherestr).all()
+            ]
+        elif whereitem == 'link_date':
+            return [
+                {
+                    "project_name":project.name,
+                    "link_articles":[
+                        article.json() for article in project.articles.filter(db.and_(db.extract('month', ProjectModel.create_time) == wherestr[5:7],db.extract('year', ProjectModel.create_time) == wherestr[:4])).all()
+                        ]
+                } for project in ProjectModel.query.all()
+            ]
 
     #抓取展示目录，默认最大值4
     @classmethod

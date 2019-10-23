@@ -96,7 +96,6 @@ def revoked_token_callback():
 # 连接地址
 @app.route('/')
 def index():
-    print(ProjectModel.get_all_projects_bytree())
     return render_template(
         'index.html',
         now_time=main_parse.welcome_home(),
@@ -107,7 +106,7 @@ def index():
 
 @app.route('/elements')
 def elements():
-    return render_template('elements.html',sidebar_project = ProjectModel.get_all_projects_bytree())
+    return render_template('elements_copy.html',sidebar_project = ProjectModel.get_all_projects_bytree())
 
 # @app.route('/generic')
 # def generic():
@@ -139,7 +138,20 @@ def articles(topic):
 
 @app.route('/query_item/<string:whereitem>/<string:wherestr>')
 def query_item(whereitem,wherestr):
-    return render_template('elements.html',sidebar_project = ProjectModel.get_all_projects_bytree())
+    sidebar_article = ArticleModel.get_all_acricles_bytree(whereitem,wherestr)
+    sidebar_feature = FeatureModel.get_all_feature_bytree(whereitem,wherestr)
+    count_article = sum(len(link['link_articles']) for link in sidebar_article)
+    count_feature = sum(len(link['link_features']) for link in sidebar_feature)
+    print(sidebar_article,sidebar_feature)
+    return render_template(
+        'elements.html',
+        whereitem = main_parse.querystr(whereitem,wherestr),
+        sidebar_article = sidebar_article,
+        sidebar_feature = sidebar_feature,
+        count_article = count_article,
+        count_feature = count_feature,
+        sidebar_project = ProjectModel.get_all_projects_bytree()
+    )
 
 api.add_resource(Project,'/api/project')
 # api.add_resource(UserRegister, '/api/register')#临时创建管理员用户，安保级别较高的请求需要JWT认证，所以注解不允许再创建用户，其实也可以用设定管理员的方式通过add_claims_to_jwt验证，但是懒~··~

@@ -53,9 +53,9 @@ def modify_image_tag(article_id = None):
         producer_image = raw_html.find_all('img')
         for image in producer_image:
             if article_id :
-                image_src = '/static/image/' + str(article_id) + '/'
+                image_src = '/static/images/' + str(article_id) + '/'
             else:
-                image_src = '/static/image/'
+                image_src = '/static/images/'
             image['src'] = image_src + image['src']
             new_span_tag = raw_html.new_tag('span')
             new_span_tag['class'] = "image main"

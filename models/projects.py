@@ -29,7 +29,8 @@ class ProjectModel(db.Model):
             "icon":self.icon,
             "introduce":self.introduce,
             "article_url":self.article_url,
-            "article_id":store.id if store is not None else -1
+            "article_id":store.id if store is not None else -1,
+            "data_str":self.create_time.strftime('%Y-%m-%d')
         }
 
     def __repr__(self):

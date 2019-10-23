@@ -25,7 +25,8 @@ class FeatureModel(db.Model):
             "id":self.id,
             "name":self.name,
             "introduce":self.introduce,
-            "link_project":self.link_project
+            "link_project":self.link_project,
+            "data_str":self.create_time.strftime('%Y-%m-%d')
         }
     
     def __repr__(self):
@@ -33,16 +34,26 @@ class FeatureModel(db.Model):
     
     #抓取sidebar目录,全部
     @classmethod
-    def get_all_feature_bytree(cls):
+    def get_all_feature_bytree(cls,whereitem,wherestr):
         '''抓取展示目录，全部'''
-        return [
-            {
-                "project_name":project.name,
-                "link_features":[
-                    feature.json() for feature in project.features
-                    ]
-            } for project in ProjectModel.query.all()
-        ]
+        if whereitem == 'link_project':
+            return [
+                {
+                    "project_name":project.name,
+                    "link_features":[
+                        feature.json() for feature in project.features
+                        ]
+                } for project in ProjectModel.query.filter_by(id = wherestr).all()
+            ]
+        elif whereitem == 'link_date':
+            return [
+                {
+                    "project_name":project.name,
+                    "link_features":[
+                        feature.json() for feature in project.features.filter(db.and_(db.extract('month', ProjectModel.create_time) == wherestr[5:7],db.extract('year', ProjectModel.create_time) == wherestr[:4])).all()
+                        ]
+                } for project in ProjectModel.query.all()
+            ]
 
     #查找重名
     @classmethod
