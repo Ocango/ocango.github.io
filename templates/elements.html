@@ -16,7 +16,7 @@
 			{% for project in sidebar_article %}
 				{% for article in project['link_articles'] %}
 				<hr>
-				<article>
+				<article title="{{article.topic}}">
 					<h3 style="margin: 0 0 0 0;"><a href="{{url_for('articles',topic = article.id)}}">{{article.topic}}</a></h3>
 					<p><span class="icon fa-calendar"></span>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="blink_to_query(this,'link_date')">{{article.data_str}}</a></p>
 					<p>{{article.introduce}}</p>
@@ -31,7 +31,7 @@
 				{% for project in sidebar_feature %}
 					{% for feature in project['link_features'] %}
 					<hr>
-					<article>
+					<article title="{{feature.name}}">
 						<h3 style="margin: 0 0 0 0;">{{feature.name}}</h3>
 						<p><span class="icon fa-calendar"></span>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="blink_to_query(this,'link_date')">{{feature.data_str}}</a></p>
 						<p>{{feature.introduce}}</p>

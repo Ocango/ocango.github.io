@@ -30,7 +30,7 @@
 			</header>
 			<div class="features">
 				{% for project in projects %}
-				<article id="{{project.article_id}}" onclick="blink_to_acticle(this,'article')" class='clickable'>
+				<article id="{{project.article_id}}" onclick="blink_to_acticle(this,'article')" class='clickable' title="{{project.name}}">
 					<span class="icon {{ project.icon }}"></span>
 					<div class="content">
 						<h3>{{project.name}}</h3>
@@ -57,7 +57,7 @@
 			</header>
 			<div class="posts">
 				{% for article in articles %}
-				<article>
+				<article title="{{article.topic}}">
 					<a href="{{ url_for('articles',topic=article.id) }}" class="image"><img src="{{ url_for('static', filename=article.picture_url) }}" alt="" /></a>
 
 					
