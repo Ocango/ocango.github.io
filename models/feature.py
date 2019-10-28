@@ -50,10 +50,20 @@ class FeatureModel(db.Model):
                 {
                     "project_name":project.name,
                     "link_features":[
-                        feature.json() for feature in project.features.filter(db.and_(db.extract('month', ProjectModel.create_time) == wherestr[5:7],db.extract('year', ProjectModel.create_time) == wherestr[:4])).all()
+                        feature.json() for feature in project.features.filter(db.and_(db.extract('month', FeatureModel.create_time) == wherestr[5:7],db.extract('year', FeatureModel.create_time) == wherestr[:4])).all()
                         ]
                 } for project in ProjectModel.query.all()
             ]
+            
+        else:
+            return [
+                {
+                    "project_name":project.name,
+                    "link_features":[
+                        feature.json() for feature in project.features.filter(db.and_(FeatureModel.name.like('%'+wherestr+'%'),FeatureModel.introduce.like('%'+wherestr+'%'))).all()
+                        ]
+                } for project in ProjectModel.query.all()
+            ]  
 
     #查找重名
     @classmethod

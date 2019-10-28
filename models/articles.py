@@ -56,10 +56,20 @@ class ArticleModel(db.Model):
                 {
                     "project_name":project.name,
                     "link_articles":[
-                        article.json() for article in project.articles.filter(db.and_(db.extract('month', ProjectModel.create_time) == wherestr[5:7],db.extract('year', ProjectModel.create_time) == wherestr[:4])).all()
+                        article.json() for article in project.articles.filter(db.and_(db.extract('month', ArticleModel.create_time) == wherestr[5:7],db.extract('year', ArticleModel.create_time) == wherestr[:4])).all()
                         ]
                 } for project in ProjectModel.query.all()
             ]
+        else:
+            print(whereitem)
+            return [
+                {
+                    "project_name":project.name,
+                    "link_articles":[
+                        article.json() for article in project.articles.filter(db.or_(ArticleModel.topic.like('%'+wherestr+'%'),ArticleModel.introduce.like('%'+wherestr+'%'))).all()
+                        ]
+                } for project in ProjectModel.query.all()
+            ]            
 
     #抓取展示目录，默认最大值4
     @classmethod

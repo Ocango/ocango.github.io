@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from flask import Flask, jsonify, render_template,abort
+from flask import Flask, jsonify, render_template,abort,request,redirect,url_for
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 
@@ -14,6 +14,7 @@ from resources.user import UserLogin, UserRegister,TokenRefresh
 from resources.articles import Article
 from resources.content import Content
 from models.feature import FeatureModel
+from resources.index_form import SearchForm
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
@@ -24,7 +25,7 @@ db.init_app(app)
 
 #API管理，加入认证机制
 #可以用os.urandom(24)生成随机的密钥
-app.config['JWT_SECRET_KEY'] = b"\x8e\xaes\x01\xb7'p\xa81\xb7\x92\xca\xc5\x1a9^\xa3\x18\xb3\rOx<x"  # 也可以使用 app.secret 就像之前一样
+app.config['SECRET_KEY'] = b"\x8e\xaes\x01\xb7'p\xa81\xb7\x92\xca\xc5\x1a9^\xa3\x18\xb3\rOx<x"  # 也可以使用 app.secret 就像之前一样
 ACCESS_EXPIRES = timedelta(minutes=15)
 REFRESH_EXPIRES = timedelta(days=30)
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = ACCESS_EXPIRES
@@ -152,6 +153,15 @@ def query_item(whereitem,wherestr):
         count_feature = count_feature,
         sidebar_project = ProjectModel.get_all_projects_bytree()
     )
+
+@app.route('/search',methods=['GET', 'POST'])
+def searchstr():
+    if request.method == 'POST':
+        querystr = request.form.get('query')
+        if querystr:
+            print(querystr)
+            return redirect(url_for('query_item',whereitem='querystr',wherestr=querystr))
+    return redirect(url_for('index'))
 
 api.add_resource(Project,'/api/project')
 # api.add_resource(UserRegister, '/api/register')#临时创建管理员用户，安保级别较高的请求需要JWT认证，所以注解不允许再创建用户，其实也可以用设定管理员的方式通过add_claims_to_jwt验证，但是懒~··~
